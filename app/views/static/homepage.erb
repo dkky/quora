@@ -1,0 +1,8 @@
+<p> <% if logged_in? %> Welcome, <%= current_user.username %> <% end %> </p>
+
+
+
+<h2> Logout </h2>
+<form action="/logout" method="post">
+    <input type="submit" value="Logout" />
+</form>
