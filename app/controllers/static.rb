@@ -1,23 +1,38 @@
-require 'byebug'
 
 get '/' do
   if logged_in?
-  	erb :"static/homepage"
+  	redirect "/homepage"
   else
-  	erb :"static/index"
+  	redirect "/home"
   end
+end
+
+get '/signup' do
+	erb :"static/signup"
+end
+
+get '/home' do
+	erb :"static/index"
 end
 
 get '/login' do
 	if logged_in?
 		redirect '/homepage'
 	else
-		erb :"static/login"
+		erb :"static/index"
 	end
 end
 
+# .all.order(created_at: :desc)
+
 get '/homepage' do
-	erb :"static/homepage"
+	@q_all = Question.paginate(:page => params[:page], :per_page => 10).order(id: :desc)
+	@ques = Question.new(params[:question])
+	if logged_in?
+		erb :"static/homepage"
+	else
+		redirect "/login"
+	end
 end
 
 # get '/homepage/:name' do
@@ -25,6 +40,7 @@ end
 # end
 
 post '/signup' do 
+
 	# name=email
 	# params = { email: 'dasdsad'}
 
@@ -36,17 +52,19 @@ post '/signup' do
 		#redirect to homepage/dashboard
 		redirect '/login' 
 	else
-		# puts "INVALID"
-		redirect '/'
+		flash.now[:error] = @user.errors.full_messages.join("\n")
+		erb :"static/signup"
 	end
 end
+
+# .messages[:email][0]
 
 post '/login' do
 	if @user = User.authenticate(params[:user][:email], params[:user][:password])
 		session[:id] = @user.id
 		redirect '/homepage'
 	else
-		redirect '/login'
+		erb :"static/index"
 	end
 
 	#with has_secure_password
@@ -64,10 +82,84 @@ post '/login' do
 end
 
 
-post '/logout' do 
+get '/logout' do 
 	session[:id] = nil
     redirect'/login'
 end
 
 get '/users/:id' do
+	@view_user = User.find(params[:id])
+	if current_user.id == params[:id]
+		erb :"users/current-user-profile"
+	else
+		erb :"users/user-profile"
+	end
 end
+
+get '/profile' do
+	erb :"users/current-user-profile"
+end
+
+
+get '/my_answer' do 
+	@my_answer = current_user.answers 
+	erb :"static/my_answer"
+end 
+
+# get '/answers/:id/edit' do
+# 	byebug
+# 	@edit_answer = current_user.answers.find(params[:id])
+# end
+
+post '/my_answer/:id' do 
+	@edit_answer = current_user.answers.find(params[:id])
+	erb :'/answers/edit'
+end
+
+post '/answer/:id/edit' do 
+	@edit_answer = Answer.find(params[:id])
+	# byebug
+	@edit_answer.update(params[:answer])
+	# byebug
+	redirect '/my_answer'
+end 
+
+post '/my_answer/:id/delete' do
+	@delete_answer = Answer.find(params[:id])
+	@delete_answer.destroy
+	redirect '/my_answer'
+end 
+
+
+post '/user/:id/question/:question_id/answer' do
+	@question = Question.find(params[:question_id])
+	@answer = @question.answers.new(user_id:params[:id],answer:params[:answer])
+	@answer.save
+	@q_all = Question.all.order(created_at: :desc)
+	# @answer = Answer.new(params[:answer])
+	# @answer.user_id = params[:id]
+	# @answer.question_id = params[:question_id]
+	# @answer.save
+	redirect "/homepage"
+end
+
+before do
+	#pass means permission granted
+	pass if logged_in? || request.path_info == '/signup' || request.path_info == '/login'
+	#otherwise do the below
+	redirect "/signup"
+end
+
+get '/fish' do
+	erb :'random/fish'
+end
+
+get '/the-story' do
+	erb :'random/the-story'
+end
+
+# before do 
+#     regex = %r{\A(\/|\/users(\/signup|\/login|\/questions\/\d+)?\/?)\z}
+#     pass if logged_in? || !(request.path_info =~ regex).nil?
+#     redirect '/'
+# end

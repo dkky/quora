@@ -1,0 +1,13 @@
+<% @my_question.each do |ques| %>
+	<p> <%= current_user.name %> asked: <%= ques.title %> </p> <br>	
+	<form action="/my_question/<%=ques.id%>" method="post">
+	  <input type="submit" value="Edit Question">
+	</form>
+	<form action="/my_question/<%=ques.id%>/delete" method="post">
+	  <input type="submit" value="Delete Question">
+	</form>
+	<% ques.answers.each do |ans| %><br>
+		<%= ans.answer %>
+	<% end %>
+<% end %>
+

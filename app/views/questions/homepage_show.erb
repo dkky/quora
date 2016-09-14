@@ -1,0 +1,20 @@
+	<p> <a href="/question/<%= ques.id%>"> <%= ques.title %> </a> </p>
+	<p> <a href="/users/<%= ques.user.id%>"> <%= ques.user.name %> asked </a> </p>
+	<p> <%= ques.question %> </p>
+	<div id='question-<%= ques.id %>-vote' class='question-vote'>
+		<%= erb :"questions/vote_btn", layout: false, locals: { ques: ques } %>
+	</div>
+	<% ques.answers.each do |ans| %><br>
+		<%= ans.answer %>
+	<% end %>			
+	<div class="answer-button">
+	  <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo_<%= ques.id %>">Answer</button>
+	  <div id="demo_<%= ques.id %>" class="collapse">
+	   	<form method=post action="/user/<%= current_user.id %>/question/<%= ques.id %>/answer">
+			<input type="text" Placeholder="Type your answer..." name="answer">
+			<br>
+			<input type=submit value="Submit">
+		</form>
+	  </div>
+	</div>
+

@@ -1,8 +1,14 @@
-<p> <% if logged_in? %> Welcome, <%= current_user.username %> <% end %> </p>
+<div id='welcome-note'> <p> <% if logged_in? %> Welcome, <%= current_user.username %> <% end %> </p> 
+</div>
 
+<div id='question-form'>
+	<% if logged_in? %>
+		<% @q_all.each do |ques| %>
+			<%= erb :"questions/homepage_show", layout: false, locals: { ques: ques } %>
+		<% end %>
+	<% end %> 
+</div>	
 
+<div id='page'> <%= will_paginate @q_all %> </div>
 
-<h2> Logout </h2>
-<form action="/logout" method="post">
-    <input type="submit" value="Logout" />
-</form>
+<div id='logout-block'> <a id="logout-text" href="/logout"> Log Out? </a> </div>

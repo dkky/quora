@@ -1,0 +1,15 @@
+<h1> <%= @view_user.name %> </h1>
+
+<div id='view-other-user-question'>
+	<a id="#" href="#"> <%= @view_user.name %>'s questions </a> 
+	<% @view_user.questions.each do |user_ques| %>
+		<p> <%= user_ques.title %> </p>
+	<% end %>
+</div>
+
+<div id='view-other-user-answer'> 
+	<a id="#" href="#"> <%= @view_user.name %>'s answers </a> 
+	<% @view_user.answers.each do |user_ans| %>
+		<p> <%= user_ans.answer %> </p>
+	<% end %>
+</div>

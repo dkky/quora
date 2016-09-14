@@ -1,0 +1,9 @@
+<h1> <%= @ques_clicked.title %> </h1>
+<h2> <%= @ques_clicked.question %> </h2>
+<h2> <%= @ques_clicked.user.name %> asked </h2>
+
+ <% @ques_clicked.answers.each do |ans| %> 
+<h2> <%= ans.answer %> </h2>
+<h2> <%= ans.user.name %> answered </h2>
+
+<% end %>

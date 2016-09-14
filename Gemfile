@@ -6,6 +6,7 @@ source 'https://rubygems.org'
 # Adding Sinatra Drivers
 gem 'sinatra'
 gem 'sinatra-contrib'
+gem 'sinatra-flash', '~> 0.3.0'
 
 # Adding thin gem as advised
 gem 'thin'
@@ -27,9 +28,15 @@ gem 'rspec'
 # password
 gem "bcrypt-ruby", "~> 3.0.1"
 
+#pagination
+gem 'will_paginate', '~> 3.1'
+
+#friendly url
+gem 'friendly_id', '~> 5.1.0'
+gem 'shotgun'
+
 group :development, :test do
 	# Adding shotgun for local web hosting
-	gem 'shotgun'
 end
 
 group :production do
